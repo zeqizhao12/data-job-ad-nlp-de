@@ -1,7 +1,7 @@
 [project]
-name = "dpp-template"
+name = "data-job-ad-nlp-de"
 version = "0.1.0"
-description = "Add your description here"
+description = "What do German employers want from data people? NLP analysis of job ads from the Bundesagentur für Arbeit. Was erwarten deutsche Arbeitgeber von Datenleuten? NLP-Analyse von Stellenanzeigen der Bundesagentur für Arbeit."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
