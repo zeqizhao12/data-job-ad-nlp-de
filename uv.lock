@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 
 [[package]]
@@ -34,7 +34,7 @@ name = "cffi"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycparser", marker = "implementation_name != 'PyPy'" },
+    { name = "pycparser" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/eb/56/b1ba7935a17738ae8453301356628e8147c79dbb825bcbc73dc7401f9846/cffi-2.0.0.tar.gz", hash = "sha256:44d1b5909021139fe36001ae048dbdde8214afa20200eda0f64c068cac5d5529", size = 523588, upload-time = "2025-09-08T23:24:04.541Z" }
 wheels = [
@@ -198,6 +198,31 @@ wheels = [
 ]
 
 [[package]]
+name = "data-job-ad-nlp-de"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "duckdb" },
+    { name = "ipykernel" },
+    { name = "kagglehub" },
+    { name = "matplotlib" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+    { name = "seaborn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "duckdb", specifier = ">=1.4.1" },
+    { name = "ipykernel", specifier = ">=7.0.1" },
+    { name = "kagglehub", specifier = ">=0.3.13" },
+    { name = "matplotlib", specifier = ">=3.10.7" },
+    { name = "pandas", specifier = ">=2.3.3" },
+    { name = "scikit-learn", specifier = ">=1.7.2" },
+    { name = "seaborn", specifier = ">=0.13.2" },
+]
+
+[[package]]
 name = "debugpy"
 version = "1.8.17"
 source = { registry = "https://pypi.org/simple" }
@@ -221,31 +246,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/43/fa/6d96a0978d19e17b68d634497769987b16c8f4cd0a7a05048bec693caa6b/decorator-5.2.1.tar.gz", hash = "sha256:65f266143752f734b0a7cc83c46f4618af75b8c5911b00ccb61d0ac9b6da0360", size = 56711, upload-time = "2025-02-24T04:41:34.073Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4e/8c/f3147f5c4b73e7550fe5f9352eaa956ae838d5c51eb58e7a25b9f3e2643b/decorator-5.2.1-py3-none-any.whl", hash = "sha256:d316bb415a2d9e2d2b3abcc4084c6502fc09240e292cd76a76afc106a1c8e04a", size = 9190, upload-time = "2025-02-24T04:41:32.565Z" },
-]
-
-[[package]]
-name = "dpp-template"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "duckdb" },
-    { name = "ipykernel" },
-    { name = "kagglehub" },
-    { name = "matplotlib" },
-    { name = "pandas" },
-    { name = "scikit-learn" },
-    { name = "seaborn" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "duckdb", specifier = ">=1.4.1" },
-    { name = "ipykernel", specifier = ">=7.0.1" },
-    { name = "kagglehub", specifier = ">=0.3.13" },
-    { name = "matplotlib", specifier = ">=3.10.7" },
-    { name = "pandas", specifier = ">=2.3.3" },
-    { name = "scikit-learn", specifier = ">=1.7.2" },
-    { name = "seaborn", specifier = ">=0.13.2" },
 ]
 
 [[package]]
