@@ -58,10 +58,12 @@ Early observations from data collection, to be examined in the analysis:
 ```
 data-job-ad-nlp-de/
 ├── data/
-│   └── raw/                  # collected ads (not in the repository)
+│   ├── raw/                  # collected ads (not in the repository)
+│   └── processed/            # cleaned data (not in the repository)
 ├── notebooks/
 │   ├── 00_api_test.ipynb     # testing the data source
-│   └── 01_collect.ipynb      # collecting search results and full texts
+│   ├── 01_collect.ipynb      # collecting search results and full texts
+│   └── 02_cleaning.ipynb     # cleaning and preparing the ads
 ├── src/                      # reusable code
 ├── pyproject.toml            # dependencies (managed with uv)
 └── README.md
