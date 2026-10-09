@@ -7,18 +7,24 @@ An NLP analysis of job ads in the German job market for data roles, collected fr
 
 ## Project Overview
 
-**Problem.** Job ads for data roles usually list long and varied requirements. For career switchers and people newly entering the field, it is hard to tell which skills are actually expected and how expectations differ between data roles, which usually overlap in some areas but diverge in others.
+**Problem.** Job ads for data roles list long and varied requirements. For
+people entering the field — graduates and career switchers — it is hard to tell
+which skills are really required, which are only nice to have, and how open
+employers are to newcomers.
 
-**Goal.** Collect job ads for data roles from the job search platform of the Bundesagentur für Arbeit, extract the required skills
-from the ad texts, in order to ultimately answer four questions:
+**Goal.** Collect job ads for data roles in Germany and answer four questions:
 
-1. Which skills are asked for most frequently?
-2. Which skills tend to appear together as skill sets?
-3. How do junior and senior roles differ?
-4. How do Data Analyst and Data Scientist roles differ?
+1. Which skills are required, and which are only nice to have?
+2. How open are ads to newcomers — in terms of experience, degree and German
+   level?
+3. Which skills tend to appear together?
+4. How do expectations differ between junior and senior roles, and between
+   Data Analyst and Data Scientist?
 
-**Approach.** Data collection via API, text cleaning, skill extraction from
-German-language texts, exploratory analysis and visualisation.
+**Approach.** Data collection via API, cleaning with documented and validated
+decisions (e.g. a hand-labelled sample to measure how well data roles are
+identified), skill and requirement extraction from German and English ad
+texts, and statistical comparison between groups.
 
 ## Data
 
@@ -89,15 +95,18 @@ Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 - **Data processing:** pandas
 - **Environment:** uv, Jupyter, VS Code
 - **Version control:** Git, GitHub
+- **Machine learning:** scikit-learn
+- **Interactive web app:** Streamlit
 
 ## Progress
 
 - [x] Project setup
 - [x] Data source tested
 - [x] Data collection
-- [ ] Text cleaning
-- [ ] Skill extraction
+- [ ] Text cleaning (in progress)
+- [ ] Skill and requirement extraction
 - [ ] Analysis and visualisation
+- [ ] Interactive skill checker (planned)
 - [ ] Final report
 
 ## Author
