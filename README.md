@@ -1,6 +1,6 @@
 # What Do German Employers Want from Data Professionals?
 
-An NLP analysis of job ads in the German job market for data roles, collected from the job search platform of the Bundesagentur für Arbeit (German Federal Employment Agency).
+A text-mining project on German job ads, with data roles as the case study. The ads are collected from the job search platform of the Bundesagentur für Arbeit (German Federal Employment Agency).
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Status](https://img.shields.io/badge/status-in%20progress-yellow)
@@ -21,10 +21,18 @@ employers are to newcomers.
 4. How do expectations differ between junior and senior roles, and between
    Data Analyst and Data Scientist?
 
-**Approach.** Data collection via API, cleaning with documented and validated
-decisions (e.g. a hand-labelled sample to measure how well data roles are
-identified), skill and requirement extraction from German and English ad
-texts, and statistical comparison between groups.
+**Approach.** The project turns unstructured job ad texts into structured information about data roles, 
+skills and entry requirements:
+- **Data collection** via API, with retries and resumable downloads.
+- **Near-duplicate detection** with text similarity to identify and remove repeated ads.
+- **Rule-based text classification** of job titles, evaluated against a hand-labelled sample by two annotators (precision, recall, cohen's kappa).
+- **Skill and requirement extraction** from German and English ad texts, including dealing with German compounds like "Pythonkenntnisse". 
+- **Statistical comparison** between data roles and experience levels (senior vs. junior), and entry conditions (experience, degree, German level).
+
+**Planned product.** A small web app that works in two directions:
+
+- **Skills → roles:** enter your skills and see which data roles match them best.
+- **Role → skills:** choose a role and see its most required and nice-to-have skills.
 
 ## Data
 
@@ -34,6 +42,7 @@ texts, and statistical comparison between groups.
 | **Collected** | 7 October 2026 |
 | **Search terms** | Data Analyst, Datenanalyst, Data Scientist, Data Engineer, Dateningenieur, Business Intelligence, Machine Learning |
 | **Size** | 2,119 ads with full text (2,542 search results, 2,121 after duplicate removal; 2 ads expired before their text could be fetched) |
+| **After cleaning** | 1,957 ads (2,031 with a location in Germany; 32 exact and 42 near-duplicate copies removed) |
 | **Content** | Title, employer, location, contract type, home office option, publication date, full ad text |
 
 The Bundesagentur does not offer an official public API. Access follows the
@@ -58,6 +67,9 @@ Early observations from data collection, to be examined in the analysis:
 - **Some duplicates are invisible to the reference number.** Recruitment
   agencies sometimes post the same job twice under different IDs; these must be
   removed by comparing texts.
+- A data search does not return only data jobs. Only 57% of the cleaned ads have a data 
+term in the title. The official occupation code is not a reliable filter either: some ads 
+coded as data occupations are hardware or mechanical engineering jobs.
 
 ## Project Structure
 
@@ -104,9 +116,11 @@ Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 - [x] Data source tested
 - [x] Data collection
 - [ ] Text cleaning (in progress)
+- [x] Location filter, exact and near-duplicate removal
+- [ ] Data-role filter: hand-labelling a random sample of 100 ads to evaluate the title rule (in progress)
 - [ ] Skill and requirement extraction
 - [ ] Analysis and visualisation
-- [ ] Interactive skill checker (planned)
+- [ ] Interactive web app: skills → roles, role → skills (planned)
 - [ ] Final report
 
 ## Author
