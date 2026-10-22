@@ -1,0 +1,277 @@
+role,skill,n_ads,share_mentioned,share_required,share_nice
+BI / Analytics,Python,119,0.168,0.092,0.076
+BI / Analytics,SQL,119,0.647,0.462,0.185
+BI / Analytics,R,119,0.067,0.034,0.034
+BI / Analytics,Java,119,0.025,0.008,0.017
+BI / Analytics,JavaScript / TypeScript,119,0.008,0.008,0.0
+BI / Analytics,Scala,119,0.0,0.0,0.0
+BI / Analytics,C++,119,0.0,0.0,0.0
+BI / Analytics,C#,119,0.017,0.008,0.008
+BI / Analytics,SAS,119,0.0,0.0,0.0
+BI / Analytics,MATLAB,119,0.0,0.0,0.0
+BI / Analytics,VBA,119,0.0,0.0,0.0
+BI / Analytics,Spark,119,0.017,0.017,0.0
+BI / Analytics,Kafka,119,0.008,0.0,0.008
+BI / Analytics,Airflow,119,0.008,0.0,0.008
+BI / Analytics,dbt,119,0.034,0.017,0.017
+BI / Analytics,ETL / ELT,119,0.37,0.336,0.034
+BI / Analytics,Data warehouse,119,0.353,0.328,0.025
+BI / Analytics,Data modelling,119,0.538,0.521,0.017
+BI / Analytics,Snowflake,119,0.101,0.05,0.05
+BI / Analytics,Databricks,119,0.059,0.042,0.017
+BI / Analytics,NoSQL,119,0.0,0.0,0.0
+BI / Analytics,AWS,119,0.034,0.017,0.017
+BI / Analytics,Azure,119,0.101,0.05,0.05
+BI / Analytics,Google Cloud,119,0.008,0.008,0.0
+BI / Analytics,Docker,119,0.0,0.0,0.0
+BI / Analytics,Kubernetes,119,0.0,0.0,0.0
+BI / Analytics,Terraform,119,0.0,0.0,0.0
+BI / Analytics,Git,119,0.034,0.008,0.025
+BI / Analytics,Linux,119,0.0,0.0,0.0
+BI / Analytics,Power BI,119,0.42,0.387,0.034
+BI / Analytics,Tableau,119,0.076,0.067,0.008
+BI / Analytics,Qlik,119,0.168,0.168,0.0
+BI / Analytics,Excel,119,0.143,0.118,0.025
+BI / Analytics,DAX / Power Query,119,0.168,0.151,0.017
+BI / Analytics,SAP,119,0.429,0.361,0.067
+BI / Analytics,Machine learning,119,0.017,0.017,0.0
+BI / Analytics,Deep learning,119,0.0,0.0,0.0
+BI / Analytics,NLP,119,0.0,0.0,0.0
+BI / Analytics,Computer vision,119,0.0,0.0,0.0
+BI / Analytics,LLM / GenAI,119,0.025,0.025,0.0
+BI / Analytics,scikit-learn,119,0.0,0.0,0.0
+BI / Analytics,TensorFlow,119,0.0,0.0,0.0
+BI / Analytics,PyTorch,119,0.0,0.0,0.0
+BI / Analytics,pandas,119,0.008,0.0,0.008
+BI / Analytics,Statistics,119,0.092,0.084,0.008
+BI / Analytics,Agile / Scrum,119,0.059,0.05,0.008
+Data Analyst,Python,247,0.304,0.235,0.069
+Data Analyst,SQL,247,0.385,0.32,0.065
+Data Analyst,R,247,0.138,0.089,0.049
+Data Analyst,Java,247,0.008,0.0,0.008
+Data Analyst,JavaScript / TypeScript,247,0.012,0.004,0.008
+Data Analyst,Scala,247,0.0,0.0,0.0
+Data Analyst,C++,247,0.012,0.012,0.0
+Data Analyst,C#,247,0.0,0.0,0.0
+Data Analyst,SAS,247,0.012,0.012,0.0
+Data Analyst,MATLAB,247,0.004,0.0,0.004
+Data Analyst,VBA,247,0.036,0.028,0.008
+Data Analyst,Spark,247,0.016,0.012,0.004
+Data Analyst,Kafka,247,0.008,0.004,0.004
+Data Analyst,Airflow,247,0.004,0.004,0.0
+Data Analyst,dbt,247,0.016,0.016,0.0
+Data Analyst,ETL / ELT,247,0.061,0.049,0.012
+Data Analyst,Data warehouse,247,0.109,0.097,0.012
+Data Analyst,Data modelling,247,0.223,0.206,0.016
+Data Analyst,Snowflake,247,0.045,0.04,0.004
+Data Analyst,Databricks,247,0.036,0.032,0.004
+Data Analyst,NoSQL,247,0.016,0.012,0.004
+Data Analyst,AWS,247,0.032,0.02,0.012
+Data Analyst,Azure,247,0.061,0.036,0.024
+Data Analyst,Google Cloud,247,0.016,0.012,0.004
+Data Analyst,Docker,247,0.0,0.0,0.0
+Data Analyst,Kubernetes,247,0.0,0.0,0.0
+Data Analyst,Terraform,247,0.004,0.004,0.0
+Data Analyst,Git,247,0.024,0.016,0.008
+Data Analyst,Linux,247,0.004,0.004,0.0
+Data Analyst,Power BI,247,0.348,0.283,0.065
+Data Analyst,Tableau,247,0.101,0.069,0.032
+Data Analyst,Qlik,247,0.028,0.024,0.004
+Data Analyst,Excel,247,0.312,0.251,0.061
+Data Analyst,DAX / Power Query,247,0.061,0.032,0.028
+Data Analyst,SAP,247,0.243,0.198,0.045
+Data Analyst,Machine learning,247,0.117,0.109,0.008
+Data Analyst,Deep learning,247,0.008,0.008,0.0
+Data Analyst,NLP,247,0.012,0.012,0.0
+Data Analyst,Computer vision,247,0.004,0.004,0.0
+Data Analyst,LLM / GenAI,247,0.028,0.028,0.0
+Data Analyst,scikit-learn,247,0.008,0.004,0.004
+Data Analyst,TensorFlow,247,0.0,0.0,0.0
+Data Analyst,PyTorch,247,0.004,0.004,0.0
+Data Analyst,pandas,247,0.004,0.0,0.004
+Data Analyst,Statistics,247,0.239,0.211,0.028
+Data Analyst,Agile / Scrum,247,0.032,0.02,0.012
+Data Engineer,Python,281,0.619,0.527,0.093
+Data Engineer,SQL,281,0.68,0.612,0.068
+Data Engineer,R,281,0.05,0.043,0.007
+Data Engineer,Java,281,0.125,0.1,0.025
+Data Engineer,JavaScript / TypeScript,281,0.039,0.036,0.004
+Data Engineer,Scala,281,0.05,0.043,0.007
+Data Engineer,C++,281,0.007,0.004,0.004
+Data Engineer,C#,281,0.014,0.004,0.011
+Data Engineer,SAS,281,0.021,0.014,0.007
+Data Engineer,MATLAB,281,0.0,0.0,0.0
+Data Engineer,VBA,281,0.007,0.004,0.004
+Data Engineer,Spark,281,0.21,0.171,0.039
+Data Engineer,Kafka,281,0.121,0.093,0.028
+Data Engineer,Airflow,281,0.167,0.121,0.046
+Data Engineer,dbt,281,0.174,0.146,0.028
+Data Engineer,ETL / ELT,281,0.48,0.456,0.025
+Data Engineer,Data warehouse,281,0.399,0.345,0.053
+Data Engineer,Data modelling,281,0.534,0.495,0.039
+Data Engineer,Snowflake,281,0.221,0.192,0.028
+Data Engineer,Databricks,281,0.221,0.203,0.018
+Data Engineer,NoSQL,281,0.075,0.06,0.014
+Data Engineer,AWS,281,0.246,0.196,0.05
+Data Engineer,Azure,281,0.367,0.317,0.05
+Data Engineer,Google Cloud,281,0.114,0.107,0.007
+Data Engineer,Docker,281,0.107,0.093,0.014
+Data Engineer,Kubernetes,281,0.117,0.114,0.004
+Data Engineer,Terraform,281,0.078,0.064,0.014
+Data Engineer,Git,281,0.189,0.146,0.043
+Data Engineer,Linux,281,0.107,0.093,0.014
+Data Engineer,Power BI,281,0.16,0.117,0.043
+Data Engineer,Tableau,281,0.025,0.018,0.007
+Data Engineer,Qlik,281,0.036,0.021,0.014
+Data Engineer,Excel,281,0.007,0.007,0.0
+Data Engineer,DAX / Power Query,281,0.018,0.018,0.0
+Data Engineer,SAP,281,0.185,0.181,0.004
+Data Engineer,Machine learning,281,0.171,0.153,0.018
+Data Engineer,Deep learning,281,0.0,0.0,0.0
+Data Engineer,NLP,281,0.004,0.004,0.0
+Data Engineer,Computer vision,281,0.004,0.004,0.0
+Data Engineer,LLM / GenAI,281,0.057,0.05,0.007
+Data Engineer,scikit-learn,281,0.014,0.007,0.007
+Data Engineer,TensorFlow,281,0.004,0.0,0.004
+Data Engineer,PyTorch,281,0.004,0.004,0.0
+Data Engineer,pandas,281,0.032,0.025,0.007
+Data Engineer,Statistics,281,0.046,0.046,0.0
+Data Engineer,Agile / Scrum,281,0.082,0.078,0.004
+Data Scientist,Python,119,0.765,0.664,0.101
+Data Scientist,SQL,119,0.437,0.387,0.05
+Data Scientist,R,119,0.227,0.193,0.034
+Data Scientist,Java,119,0.059,0.05,0.008
+Data Scientist,JavaScript / TypeScript,119,0.017,0.017,0.0
+Data Scientist,Scala,119,0.034,0.025,0.008
+Data Scientist,C++,119,0.025,0.017,0.008
+Data Scientist,C#,119,0.008,0.008,0.0
+Data Scientist,SAS,119,0.05,0.025,0.025
+Data Scientist,MATLAB,119,0.0,0.0,0.0
+Data Scientist,VBA,119,0.0,0.0,0.0
+Data Scientist,Spark,119,0.076,0.059,0.017
+Data Scientist,Kafka,119,0.0,0.0,0.0
+Data Scientist,Airflow,119,0.067,0.05,0.017
+Data Scientist,dbt,119,0.034,0.034,0.0
+Data Scientist,ETL / ELT,119,0.084,0.076,0.008
+Data Scientist,Data warehouse,119,0.084,0.067,0.017
+Data Scientist,Data modelling,119,0.143,0.126,0.017
+Data Scientist,Snowflake,119,0.008,0.008,0.0
+Data Scientist,Databricks,119,0.109,0.101,0.008
+Data Scientist,NoSQL,119,0.05,0.042,0.008
+Data Scientist,AWS,119,0.118,0.092,0.025
+Data Scientist,Azure,119,0.193,0.168,0.025
+Data Scientist,Google Cloud,119,0.134,0.109,0.025
+Data Scientist,Docker,119,0.067,0.059,0.008
+Data Scientist,Kubernetes,119,0.034,0.017,0.017
+Data Scientist,Terraform,119,0.008,0.008,0.0
+Data Scientist,Git,119,0.151,0.134,0.017
+Data Scientist,Linux,119,0.034,0.017,0.017
+Data Scientist,Power BI,119,0.151,0.134,0.017
+Data Scientist,Tableau,119,0.067,0.067,0.0
+Data Scientist,Qlik,119,0.025,0.025,0.0
+Data Scientist,Excel,119,0.025,0.025,0.0
+Data Scientist,DAX / Power Query,119,0.025,0.025,0.0
+Data Scientist,SAP,119,0.042,0.034,0.008
+Data Scientist,Machine learning,119,0.672,0.655,0.017
+Data Scientist,Deep learning,119,0.101,0.101,0.0
+Data Scientist,NLP,119,0.042,0.042,0.0
+Data Scientist,Computer vision,119,0.076,0.05,0.025
+Data Scientist,LLM / GenAI,119,0.168,0.168,0.0
+Data Scientist,scikit-learn,119,0.143,0.143,0.0
+Data Scientist,TensorFlow,119,0.092,0.092,0.0
+Data Scientist,PyTorch,119,0.143,0.143,0.0
+Data Scientist,pandas,119,0.092,0.092,0.0
+Data Scientist,Statistics,119,0.639,0.588,0.05
+Data Scientist,Agile / Scrum,119,0.025,0.025,0.0
+ML / AI Engineer,Python,211,0.545,0.464,0.081
+ML / AI Engineer,SQL,211,0.166,0.133,0.033
+ML / AI Engineer,R,211,0.028,0.028,0.0
+ML / AI Engineer,Java,211,0.062,0.052,0.009
+ML / AI Engineer,JavaScript / TypeScript,211,0.062,0.047,0.014
+ML / AI Engineer,Scala,211,0.005,0.005,0.0
+ML / AI Engineer,C++,211,0.062,0.047,0.014
+ML / AI Engineer,C#,211,0.033,0.024,0.009
+ML / AI Engineer,SAS,211,0.0,0.0,0.0
+ML / AI Engineer,MATLAB,211,0.009,0.009,0.0
+ML / AI Engineer,VBA,211,0.005,0.0,0.005
+ML / AI Engineer,Spark,211,0.043,0.033,0.009
+ML / AI Engineer,Kafka,211,0.019,0.014,0.005
+ML / AI Engineer,Airflow,211,0.014,0.014,0.0
+ML / AI Engineer,dbt,211,0.009,0.009,0.0
+ML / AI Engineer,ETL / ELT,211,0.019,0.014,0.005
+ML / AI Engineer,Data warehouse,211,0.028,0.028,0.0
+ML / AI Engineer,Data modelling,211,0.052,0.043,0.009
+ML / AI Engineer,Snowflake,211,0.009,0.009,0.0
+ML / AI Engineer,Databricks,211,0.028,0.019,0.009
+ML / AI Engineer,NoSQL,211,0.043,0.033,0.009
+ML / AI Engineer,AWS,211,0.199,0.175,0.024
+ML / AI Engineer,Azure,211,0.265,0.218,0.047
+ML / AI Engineer,Google Cloud,211,0.123,0.104,0.019
+ML / AI Engineer,Docker,211,0.166,0.128,0.038
+ML / AI Engineer,Kubernetes,211,0.137,0.109,0.028
+ML / AI Engineer,Terraform,211,0.043,0.028,0.014
+ML / AI Engineer,Git,211,0.147,0.128,0.019
+ML / AI Engineer,Linux,211,0.071,0.047,0.024
+ML / AI Engineer,Power BI,211,0.033,0.019,0.014
+ML / AI Engineer,Tableau,211,0.005,0.005,0.0
+ML / AI Engineer,Qlik,211,0.0,0.0,0.0
+ML / AI Engineer,Excel,211,0.038,0.033,0.005
+ML / AI Engineer,DAX / Power Query,211,0.0,0.0,0.0
+ML / AI Engineer,SAP,211,0.033,0.028,0.005
+ML / AI Engineer,Machine learning,211,0.697,0.654,0.043
+ML / AI Engineer,Deep learning,211,0.166,0.152,0.014
+ML / AI Engineer,NLP,211,0.057,0.057,0.0
+ML / AI Engineer,Computer vision,211,0.095,0.081,0.014
+ML / AI Engineer,LLM / GenAI,211,0.479,0.469,0.009
+ML / AI Engineer,scikit-learn,211,0.085,0.071,0.014
+ML / AI Engineer,TensorFlow,211,0.185,0.161,0.024
+ML / AI Engineer,PyTorch,211,0.237,0.204,0.033
+ML / AI Engineer,pandas,211,0.043,0.043,0.0
+ML / AI Engineer,Statistics,211,0.071,0.062,0.009
+ML / AI Engineer,Agile / Scrum,211,0.104,0.095,0.009
+Other data role,Python,85,0.141,0.118,0.024
+Other data role,SQL,85,0.153,0.129,0.024
+Other data role,R,85,0.035,0.024,0.012
+Other data role,Java,85,0.071,0.071,0.0
+Other data role,JavaScript / TypeScript,85,0.035,0.035,0.0
+Other data role,Scala,85,0.012,0.012,0.0
+Other data role,C++,85,0.035,0.024,0.012
+Other data role,C#,85,0.024,0.024,0.0
+Other data role,SAS,85,0.012,0.012,0.0
+Other data role,MATLAB,85,0.012,0.0,0.012
+Other data role,VBA,85,0.012,0.012,0.0
+Other data role,Spark,85,0.0,0.0,0.0
+Other data role,Kafka,85,0.0,0.0,0.0
+Other data role,Airflow,85,0.0,0.0,0.0
+Other data role,dbt,85,0.0,0.0,0.0
+Other data role,ETL / ELT,85,0.082,0.082,0.0
+Other data role,Data warehouse,85,0.047,0.047,0.0
+Other data role,Data modelling,85,0.224,0.224,0.0
+Other data role,Snowflake,85,0.035,0.024,0.012
+Other data role,Databricks,85,0.012,0.012,0.0
+Other data role,NoSQL,85,0.047,0.047,0.0
+Other data role,AWS,85,0.059,0.059,0.0
+Other data role,Azure,85,0.071,0.059,0.012
+Other data role,Google Cloud,85,0.012,0.012,0.0
+Other data role,Docker,85,0.024,0.024,0.0
+Other data role,Kubernetes,85,0.012,0.012,0.0
+Other data role,Terraform,85,0.0,0.0,0.0
+Other data role,Git,85,0.024,0.024,0.0
+Other data role,Linux,85,0.047,0.024,0.024
+Other data role,Power BI,85,0.165,0.153,0.012
+Other data role,Tableau,85,0.024,0.024,0.0
+Other data role,Qlik,85,0.0,0.0,0.0
+Other data role,Excel,85,0.118,0.118,0.0
+Other data role,DAX / Power Query,85,0.047,0.024,0.024
+Other data role,SAP,85,0.2,0.165,0.035
+Other data role,Machine learning,85,0.141,0.129,0.012
+Other data role,Deep learning,85,0.0,0.0,0.0
+Other data role,NLP,85,0.0,0.0,0.0
+Other data role,Computer vision,85,0.012,0.012,0.0
+Other data role,LLM / GenAI,85,0.047,0.047,0.0
+Other data role,scikit-learn,85,0.012,0.012,0.0
+Other data role,TensorFlow,85,0.0,0.0,0.0
+Other data role,PyTorch,85,0.0,0.0,0.0
+Other data role,pandas,85,0.012,0.012,0.0
+Other data role,Statistics,85,0.071,0.071,0.0
+Other data role,Agile / Scrum,85,0.035,0.035,0.0

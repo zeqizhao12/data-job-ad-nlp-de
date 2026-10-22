@@ -1,0 +1,7 @@
+role,n_ads,newcomer_friendly,junior_title,years_3_plus,degree,alt_path,german_high,german_not_mentioned
+BI / Analytics,119,0.151,0.042,0.403,0.731,0.387,0.437,0.445
+Data Analyst,247,0.308,0.101,0.3,0.846,0.34,0.364,0.51
+Data Engineer,281,0.189,0.025,0.459,0.73,0.359,0.512,0.388
+Data Scientist,119,0.202,0.059,0.328,0.882,0.151,0.403,0.42
+ML / AI Engineer,211,0.175,0.038,0.346,0.744,0.308,0.441,0.46
+Other data role,85,0.212,0.035,0.4,0.682,0.282,0.282,0.671
