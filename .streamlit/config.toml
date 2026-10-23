@@ -1,8 +1,21 @@
-# Colours from the scientific colour map "oslo" (Fabio Crameri, https://www.fabiocrameri.ch/colourmaps/)
+# Colours from the scientific colour map "oslo" (Fabio Crameri, https://www.fabiocrameri.ch/colourmaps/).
+# Both themes are defined, so users can switch in the app menu (⋮ → Settings); the default follows the system.
+# The app sets no colours itself: text, bars and badges all come from these theme values.
 [theme]
-base = "light"
-primaryColor = "#1a446d"
+font = "sans serif"
+
+[theme.light]
+primaryColor = "#215081"
 backgroundColor = "#fbfbfa"
 secondaryBackgroundColor = "#ecedee"
 textColor = "#0f2236"
-font = "sans serif"
+blueColor = "#2c5d96"
+blueTextColor = "#1a446d"
+
+[theme.dark]
+primaryColor = "#7494c9"
+backgroundColor = "#060c13"
+secondaryBackgroundColor = "#0e1c2c"
+textColor = "#ecedee"
+blueColor = "#6388c6"
+blueTextColor = "#93a7c9"
