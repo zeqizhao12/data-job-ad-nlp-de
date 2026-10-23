@@ -98,33 +98,26 @@ SKILL_GROUPS = {
 
 
 # --- Data and helpers -----------------------------------------------------------------------------------
+def tenths(p):
+    """Share rounded to whole tenths (0.31 -> 3); everything uses the same denominator, 10 ads."""
+    return min(10, int(p * 10 + 0.5))
+
+
 def freq(p):
-    """A share as a natural frequency: 0.31 -> '1 in 3', 0.85 -> '8 in 10'."""
+    """A share as a natural frequency with a common denominator: 0.31 -> '3 in 10'."""
     if p >= 0.95:
         return "almost all"
-    if p >= 0.45:
-        return f"{round(p * 10)} in 10"
-    if p >= 0.02:
-        nice = [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            12,
-            15,
-            20,
-            25,
-            30,
-            40,
-            50,
-        ]  # denominators people can picture
-        return f"1 in {min(nice, key=lambda d: abs(d - 1 / p))}"
-    return "hardly any"
+    if tenths(p) == 0:
+        return "fewer than 1 in 10"
+    return f"{tenths(p)} in 10"
+
+
+def icons(p):
+    """Icon array of 10 ads, filled squares = share of ads (risk-communication style)."""
+    n = tenths(p)
+    return (f":blue[{'■' * n}]" if n else "") + (
+        f":violet[{'■' * (10 - n)}]" if n < 10 else ""
+    )  # violet = "empty square" colour in the theme
 
 
 def fit_label(match):
@@ -135,6 +128,15 @@ def fit_label(match):
     if match >= 0.2:
         return "Some overlap"
     return "Little overlap"
+
+
+def fit_badge(match):
+    label = fit_label(match)
+    icon = {"Strong fit": ":material/star: ", "Good start": ":material/thumb_up: "}.get(
+        label, ""
+    )
+    colour = "blue" if match >= 0.4 else "gray"
+    return f":{colour}-badge[{icon}{label}]"
 
 
 @st.cache_data
@@ -183,9 +185,11 @@ def skill_rows(df, selected, value_col, suffix="", mark_missing=True):
     if df.empty:
         st.caption("None")
     for s, p in zip(df["skill"], df[value_col]):
-        c1, c2, c3 = st.columns([4, 4, 3], vertical_alignment="center")
+        c1, c2, c3 = st.columns([3, 5, 3], vertical_alignment="center")
         c1.markdown(f"**{s}**")
-        c2.markdown(f"{freq(p)} ads{suffix}", help=f"{p:.0%} of the ads")
+        c2.markdown(
+            f"{icons(p)} {freq(p)} ads{suffix}", help=f"exactly {p:.0%} of the ads"
+        )
         if s in selected:
             c3.markdown(HAVE)
         elif selected and mark_missing:
@@ -196,11 +200,56 @@ def selected_skills():
     return st.session_state.get("skills_store", [])
 
 
+def toolbar():
+    """Small toolbar at the top right of every page, where web apps usually put help, theme and source."""
+    _, c_help, c_theme, c_code = st.columns(
+        [8, 1.1, 1.6, 1.1], vertical_alignment="center"
+    )
+    with c_help.popover("Help", icon=":material/help:", width="stretch"):
+        st.markdown("""
+**1 · Click your skills** on *Find roles for my skills*.
+**2 · See your best fit**, its fit score and the three skills to learn next.
+**3 · Explore a role** to see what its employers ask for.
+
+**Fit score:** how much of a role's key-skill demand your skills cover (0–100%).
+**■■■□□□□□□□ 3 in 10 ads:** each square is one of 10 typical ads.
+""")
+    with c_theme.popover("Light / dark", icon=":material/contrast:", width="stretch"):
+        st.markdown("The app follows your device setting (light or dark) by default.")
+        st.markdown(
+            "**To switch:** click **⋮** at the very top right → **Settings** → **Choose app theme**."
+        )
+        st.caption(
+            "Both themes use the colour map *oslo* by Fabio Crameri, readable with colour-vision deficiencies."
+        )
+    c_code.link_button("Code", GITHUB, icon=":material/code:", width="stretch")
+
+
 skills, barriers, AVG, N_TOTAL = load()
+
+
+def result_text(results):
+    """Plain-text summary the user can save."""
+    lines = [
+        "Which data job fits you? - my result",
+        f"Based on {N_TOTAL:,} job ads (Bundesagentur für Arbeit, October 2026)",
+        "",
+        "My skills: " + ", ".join(selected_skills()),
+        "",
+    ]
+    for r in results:
+        lines.append(
+            f"{r['role']}: fit score {r['match']:.0%} ({fit_label(r['match'])}), "
+            f"{len(r['have'])} of {r['n_key']} key skills"
+        )
+        if len(r["missing"]):
+            lines.append("  learn next: " + ", ".join(r["missing"]["skill"].head(3)))
+    return "\n".join(lines)
 
 
 # --- Page 1: start ---------------------------------------------------------------------------------------
 def start_page():
+    toolbar()
     st.title("Which data job fits you?")
     st.markdown(
         "#### See which data roles match your skills, what employers really require, and what to learn next."
@@ -233,7 +282,7 @@ def start_page():
             (
                 ":material/target:",
                 "2 · See your best fit",
-                "Find the data role that fits you best and the three skills to learn next.",
+                "Get a fit score for every data role and the three skills to learn next.",
             ),
             (
                 ":material/work:",
@@ -264,6 +313,7 @@ def start_page():
 
 # --- Page 2: skills -> roles ------------------------------------------------------------------------------
 def find_page():
+    toolbar()
     st.title("Find roles for my skills")
     col_in, col_out = st.columns([11, 9], gap="large")
 
@@ -306,12 +356,19 @@ def find_page():
         role = best["role"]
         b = barriers.loc[role]
         with st.container(border=True):
-            st.markdown(f"## :blue[{role}]")
-            st.markdown(
-                f"**{fit_label(best['match'])}:** you have **{len(best['have'])} of the "
-                f"{best['n_key']} key skills** that {role} employers ask for."
+            c_name, c_score = st.columns([3, 2], vertical_alignment="bottom")
+            c_name.markdown(f"## :blue[{role}]")
+            c_name.markdown(fit_badge(best["match"]))
+            c_score.metric(
+                "Fit score",
+                f"{best['match']:.0%}",
+                help="How much of this role's key-skill demand your skills cover, weighted by how often "
+                "each skill is required",
             )
             st.progress(best["match"])
+            st.markdown(
+                f"You have **{len(best['have'])} of the {best['n_key']} key skills** that {role} employers ask for."
+            )
             nxt = best["missing"].head(3)
             if len(nxt):
                 st.markdown("**Learn next**")
@@ -334,22 +391,34 @@ def find_page():
                 f"{freq(b['newcomer_friendly']).capitalize()} {role} ads are open to beginners, "
                 f"{more} the average for data roles ({freq(AVG['newcomer_friendly'])})."
             )
-            if st.button(
-                f"See what {role} employers ask for", icon=":material/arrow_forward:"
+            b1, b2 = st.columns(2)
+            if b1.button(
+                "See role details", icon=":material/arrow_forward:", width="stretch"
             ):
                 st.session_state["role_store"] = role
                 st.session_state.pop("role_choice", None)
                 st.switch_page(explore_page)
+            b2.download_button(
+                "Save my result",
+                result_text(results),
+                file_name="my_data_job_fit.txt",
+                icon=":material/download:",
+                width="stretch",
+                on_click="ignore",
+            )
 
     # Everything else
     st.divider()
     st.subheader("How you fit every role")
     for r in results:
-        c_role, c_bar, c_text = st.columns([3, 5, 4], vertical_alignment="center")
+        c_role, c_score, c_bar, c_text = st.columns(
+            [3, 1.2, 5, 4], vertical_alignment="center"
+        )
         c_role.markdown(f"**{r['role']}**" if r is results[0] else r["role"])
+        c_score.markdown(f"**{r['match']:.0%}**")
         c_bar.progress(r["match"])
-        c_text.caption(
-            f"{fit_label(r['match'])} · {len(r['have'])} of {r['n_key']} key skills"
+        c_text.markdown(
+            f"{fit_badge(r['match'])} {len(r['have'])} of {r['n_key']} key skills"
         )
 
     with st.expander("Which key skills do you have and miss, per role?"):
@@ -380,6 +449,7 @@ def find_page():
 
 # --- Page 3: role -> skills -------------------------------------------------------------------------------
 def explore_page():
+    toolbar()
     st.title("What does a role ask for?")
     st.subheader("1 · Choose a role")
     if "role_choice" not in st.session_state:
@@ -419,38 +489,38 @@ def explore_page():
     with right:
         st.subheader("How easy is it to get in?")
         with st.container(border=True):
-            m1, m2 = st.columns(2)
-            m1.metric(
-                "Open to beginners",
-                freq(b["newcomer_friendly"]) + " ads",
-                help=f"{b['newcomer_friendly']:.0%} of {role} ads: junior title, beginner wording "
-                "('Berufseinsteiger', 'erste Erfahrung'), or at most 1–2 years of experience",
-            )
-            m1.caption(f"Average for data roles: {freq(AVG['newcomer_friendly'])}")
-            m2.metric(
-                "Ask for 3+ years",
-                freq(b["years_3_plus"]) + " ads",
-                help=f"{b['years_3_plus']:.0%} of {role} ads: three or more years, or 'several years'",
-            )
-            m2.caption(f"Average for data roles: {freq(AVG['years_3_plus'])}")
-            m3, m4 = st.columns(2)
-            m3.metric(
-                "Mention a degree",
-                freq(b["degree"]) + " ads",
-                help=f"{b['degree']:.0%} of {role} ads mention a university degree",
-            )
-            m3.caption(
-                f"{freq(b['alt_path']).capitalize()} also accept equivalent qualifications"
-            )
-            m4.metric(
-                "Require fluent German",
-                freq(b["german_fluent"]) + " ads",
-                help=f"{b['german_fluent']:.0%} of {role} ads: fließend, verhandlungssicher, muttersprachlich or C1/C2",
-            )
-            m4.caption(
-                f"{freq(b['english_ad']).capitalize()} ads are written in English"
-            )
-
+            rows = [
+                (
+                    "Open to beginners",
+                    b["newcomer_friendly"],
+                    f"Average for data roles: {freq(AVG['newcomer_friendly'])}",
+                    "Junior title, beginner wording ('Berufseinsteiger', 'erste Erfahrung'), or at most 1–2 years of experience",
+                ),
+                (
+                    "Ask for 3+ years of experience",
+                    b["years_3_plus"],
+                    f"Average for data roles: {freq(AVG['years_3_plus'])}",
+                    "Three or more years, or 'several years' without a number",
+                ),
+                (
+                    "Mention a university degree",
+                    b["degree"],
+                    f"{freq(b['alt_path']).capitalize()} also accept equivalent qualifications",
+                    "Studium, Bachelor, Master or degree mentioned in the ad",
+                ),
+                (
+                    "Require fluent German",
+                    b["german_fluent"],
+                    f"{freq(b['english_ad']).capitalize()} ads are written in English",
+                    "Fließend, verhandlungssicher, muttersprachlich or C1/C2",
+                ),
+            ]
+            for label, p, note, explain in rows:
+                st.markdown(
+                    f"**{label}**", help=f"{explain}. Exactly {p:.0%} of {role} ads."
+                )
+                st.subheader(f"{icons(p)} {freq(p)} ads", anchor=False)
+                st.caption(note)
     st.divider()
     c1, c2 = st.columns(2, gap="large")
     with c1:
