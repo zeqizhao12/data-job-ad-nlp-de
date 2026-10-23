@@ -7,7 +7,10 @@ collected from the job search platform of the Bundesagentur für Arbeit (German
 Federal Employment Agency).
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
-![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+![Status](https://img.shields.io/badge/status-complete-brightgreen)
+[![Live app](https://img.shields.io/badge/live%20app-Streamlit-FF4B4B)](https://data-jobs-de.streamlit.app/)
+
+**Live app: [data-jobs-de.streamlit.app](https://data-jobs-de.streamlit.app/)** — click the skills you have and see which data role fits you best and what to learn next.
 
 ## Project Overview
 
@@ -37,10 +40,10 @@ skills and entry requirements:
 - **Statistical comparison** of roles and seniority levels: shares with Wilson confidence intervals, log-odds ratios for role-typical skills, Fisher's exact test for the small junior group (Benjamini–Hochberg adjusted).
 - **Robustness checks:** results recomputed with duplicates weighted, old ads removed and every employer weighted equally.
 
-**Planned product.** A small web app that works in two directions:
+**Product.** A [web app](https://data-jobs-de.streamlit.app/) for career switchers and newcomers that works in two directions:
 
-- **Skills → roles:** enter your skills and see which data roles match them best, and which required skills are still missing.
-- **Role → skills:** choose a role and see its most required and nice-to-have skills.
+- **Skills → roles:** click your skills and see how well you fit each data role, which key skills you already have, and the three to learn next.
+- **Role → skills:** choose a role and see its must-have and bonus skills, and how open it is to beginners (experience, degree, German).
 
 ## Data
 
@@ -183,6 +186,31 @@ same ranking (Spearman 0.985–0.999); the largest change is 4.1 percentage poin
 term in the title. The official occupation code is not a reliable filter either: some ads 
 coded as data occupations are hardware or mechanical engineering jobs.
 
+## The Web App
+
+**[data-jobs-de.streamlit.app](https://data-jobs-de.streamlit.app/)** · built with Streamlit, deployed on Streamlit Community Cloud.
+
+**From analysis to app.** `04_analysis.ipynb` exports two aggregated tables, and the app computes everything from them; no ad text reaches the app.
+
+| Table | Rows | Content |
+|---|---|---|
+| `app/data/role_skills.csv` | 276 (6 roles × 46 skills) | share of each role's ads that mention, require, or only hedge each skill |
+| `app/data/role_barriers.csv` | 6 (one per role) | newcomer-friendly, 3+ years, degree, alternative path, fluent German, English-language ad |
+
+**How the fit score works.**
+
+1. A role's **key skills** are those required in at least 1 in 10 of its ads.
+2. Each key skill is **weighted** by how often it is required.
+3. **Fit score** = weights of the key skills you have ÷ weights of all key skills. Labels: at least 60% *Strong fit*, 40–60% *Good start*, 20–40% *Some overlap*, below 20% *Little overlap*.
+
+*Example:* with Python, SQL, Excel and Statistics, Data Analyst has 8 key skills; the four selected ones are required in 32.0%, 25.1%, 23.5% and 21.1% of Data Analyst ads (sum 101.7), all eight sum to 181.3, so the fit is 101.7 ÷ 181.3 = 56% (*Good start*). The most required missing skill is Power BI (28.3%), shown as "3 in 10 ads".
+
+**Design decisions.**
+
+- **Natural frequencies:** shares are shown as "3 in 10 ads" with an icon array of 10 squares instead of percentages, which is easier to read for non-experts.
+- **Accessible colours:** light and dark themes based on Fabio Crameri's scientific colour map *oslo*, readable with colour-vision deficiencies.
+- **Privacy:** only aggregated numbers are published; the ad texts stay out of the repository.
+
 ## Limitations
 
 - **Data source:** a snapshot of one day from one platform (Bundesagentur für Arbeit);
@@ -199,6 +227,8 @@ coded as data occupations are hardware or mechanical engineering jobs.
   official standard.
 - **Small junior group:** only 55 ads have a junior title, so differences need
   large effects to be significant.
+- **Rounding in the app:** "3 in 10 ads" rounds to whole tenths, so small differences
+  disappear (25% and 34% both show as 3 in 10); exact values are in the app's tables.
 
 ## Future Work
 
@@ -206,6 +236,7 @@ coded as data occupations are hardware or mechanical engineering jobs.
 - A text classifier (e.g. TF-IDF + logistic regression) as a comparison to the rule-based baseline
 - A second labelling round with a sharper codebook for adjacent roles
 - Skill co-occurrence networks
+- Regular collection to track changes over time
 
 ## Project Structure
 
@@ -221,10 +252,14 @@ data-job-ad-nlp-de/
 │   ├── 03_extraction.ipynb   # roles, seniority, skills, required vs. nice-to-have, entry barriers, ad language
 │   └── 04_analysis.ipynb     # confidence intervals, role comparison, junior vs. senior, robustness checks
 ├── app/
+│   ├── app.py                # Streamlit web app
+│   ├── requirements.txt      # app dependencies for Streamlit Community Cloud
 │   └── data/                 # aggregated tables for the web app (no ad texts)
+├── .streamlit/
+│   └── config.toml           # app themes (light and dark)
 ├── reports/
 │   └── figures/              # charts used in the README and report
-├── src/                      # reusable code
+├── src/                      # helper from the course template (not used by the notebooks)
 ├── pyproject.toml            # dependencies (managed with uv)
 └── README.md
 ```
@@ -242,6 +277,12 @@ uv sync
 Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 `data/raw/`; the full collection takes about 35 minutes.
 
+The web app runs without the raw data, from the aggregated tables in `app/data/`:
+
+```bash
+uv run streamlit run app/app.py
+```
+
 ## Tech Stack
 
 - **Language:** Python 3.13
@@ -252,7 +293,7 @@ Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 - **Version control:** Git, GitHub
 - **Statistics:** SciPy
 - **Language identification:** lingua
-- **Interactive web app:** Streamlit (planned)
+- **Web app:** Streamlit, deployed on Streamlit Community Cloud
 
 ## Progress
 
@@ -266,8 +307,8 @@ Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 - [x] Skill extraction (46 skills) and required vs. nice-to-have split
 - [x] Entry barriers: experience, degree, German level, ad language
 - [x] Analysis: shares with confidence intervals, role comparison, junior vs. senior, robustness checks
-- [ ] Interactive web app: skills → roles, role → skills (planned)
-- [ ] Final report
+- [x] Web app: skills → roles, role → skills ([live](https://data-jobs-de.streamlit.app/))
+- [x] Final presentation (23 October 2026)
 
 ## Author
 
