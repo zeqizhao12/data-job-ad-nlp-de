@@ -207,6 +207,8 @@ def toolbar():
     )
     with c_help.popover("Help", icon=":material/help:", width="stretch"):
         st.markdown("""
+**Who is it for?** Career switchers and newcomers to data who want to know which role fits them and what to learn next.
+
 **1 · Click your skills** on *Find roles for my skills*.
 **2 · See your best fit**, its fit score and the three skills to learn next.
 **3 · Explore a role** to see what its employers ask for.
@@ -250,9 +252,13 @@ def result_text(results):
 # --- Page 1: start ---------------------------------------------------------------------------------------
 def start_page():
     toolbar()
+    st.markdown(
+        ":blue-badge[:material/school: For career switchers and newcomers to data]"
+    )
     st.title("Which data job fits you?")
     st.markdown(
-        "#### See which data roles match your skills, what employers really require, and what to learn next."
+        "#### Switching into data, or just starting out? See which data roles match the skills you already have, "
+        "what employers really require, and what to learn next."
     )
     st.markdown(
         f"Based on **{N_TOTAL:,} real job ads** for data roles in Germany "
@@ -267,6 +273,34 @@ def start_page():
     if st.button("or explore a role directly", type="tertiary"):
         st.switch_page(explore_page)
     st.caption("Takes about a minute. No sign-up, nothing is stored.")
+
+    st.write("")
+    st.subheader("Who is it for?")
+    who = st.columns(3, gap="medium")
+    for col, (icon, title, text) in zip(
+        who,
+        [
+            (
+                ":material/swap_horiz:",
+                "Career switchers",
+                "You bring skills from another field and want to know which data role they lead to.",
+            ),
+            (
+                ":material/school:",
+                "Graduates and newcomers",
+                "You are starting out and want to know what employers expect from beginners.",
+            ),
+            (
+                ":material/menu_book:",
+                "Anyone planning what to learn",
+                "You want to spend your learning time on the skills that ads ask for most.",
+            ),
+        ],
+    ):
+        with col, st.container(border=True):
+            st.markdown(f"### {icon}")
+            st.markdown(f"**{title}**")
+            st.caption(text)
 
     st.write("")
     st.subheader("How it works")
@@ -315,6 +349,10 @@ def start_page():
 def find_page():
     toolbar()
     st.title("Find roles for my skills")
+    st.caption(
+        "Made for career switchers and newcomers: the result shows which role is the most realistic way in "
+        "with the skills you already have, and what to learn next."
+    )
     col_in, col_out = st.columns([11, 9], gap="large")
 
     # Input
@@ -451,6 +489,10 @@ def find_page():
 def explore_page():
     toolbar()
     st.title("What does a role ask for?")
+    st.caption(
+        "Made for career switchers and newcomers: see what a role requires and how open it is to people "
+        "without years of experience in it."
+    )
     st.subheader("1 · Choose a role")
     if "role_choice" not in st.session_state:
         st.session_state["role_choice"] = st.session_state.get(
@@ -488,6 +530,7 @@ def explore_page():
             )
     with right:
         st.subheader("How easy is it to get in?")
+        st.caption("What matters most if you are new to data or switching careers.")
         with st.container(border=True):
             rows = [
                 (
