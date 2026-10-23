@@ -3,11 +3,12 @@
 # The app sets no colours itself: text, bars and badges all come from these theme values.
 [theme]
 font = "sans serif"
+default = "light"
 
 [theme.light]
 primaryColor = "#215081"
 backgroundColor = "#fbfbfa"
-secondaryBackgroundColor = "#ecedee"
+secondaryBackgroundColor = "#d8dade"
 textColor = "#0f2236"
 blueColor = "#2c5d96"
 blueTextColor = "#1a446d"
@@ -15,7 +16,7 @@ blueTextColor = "#1a446d"
 [theme.dark]
 primaryColor = "#7494c9"
 backgroundColor = "#060c13"
-secondaryBackgroundColor = "#0e1c2c"
+secondaryBackgroundColor = "#15395b"
 textColor = "#ecedee"
 blueColor = "#6388c6"
 blueTextColor = "#93a7c9"
