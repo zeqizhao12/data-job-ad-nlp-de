@@ -7,6 +7,7 @@ Shares are shown as natural frequencies ("1 in 3 ads"); exact percentages are in
 Run locally from the project root:
     uv run streamlit run app/app.py
 """
+
 from pathlib import Path
 
 import altair as alt
@@ -14,7 +15,24 @@ import pandas as pd
 import streamlit as st
 
 DATA_DIR = Path(__file__).parent / "data"
-MAIN, GREY, DARK = "#5b7a99", "#c9ced6", "#2f3e4e"
+# Colours: the scientific colour map "oslo" (Crameri 2018, https://www.fabiocrameri.ch/colourmaps/):
+# perceptually uniform, readable for colour-vision deficiencies and in greyscale. Ordered things
+# (fit levels, skill tiers) get ordered lightness: darker = more.
+OSLO = {
+    "20": "#122d48",
+    "30": "#1a446d",
+    "35": "#215081",
+    "40": "#2c5d96",
+    "45": "#3b6bab",
+    "55": "#6388c6",
+}  # oslo sampled at 0.20-0.55: every level has at least 3:1 contrast to the background
+MAIN, GREY, DARK = OSLO["30"], OSLO["55"], "#0f2236"
+FIT_COLOURS = {
+    "Strong fit": OSLO["20"],
+    "Good start": OSLO["35"],
+    "Some overlap": OSLO["45"],
+    "Little overlap": OSLO["55"],
+}
 ROLES = [
     "Data Analyst",
     "BI / Analytics",
@@ -177,7 +195,7 @@ def fit_chart(results):
             ],
         }
     )
-    df["best"] = df.index == 0
+    df["fit"] = [fit_label(m) for m in df["match"]]
     bars = (
         alt.Chart(df)
         .mark_bar(cornerRadiusEnd=4)
@@ -191,7 +209,13 @@ def fit_chart(results):
                     labelFontSize=14, labelLimit=220, domain=False, ticks=False
                 ),
             ),
-            color=alt.condition("datum.best", alt.value(MAIN), alt.value(GREY)),
+            color=alt.Color(
+                "fit:N",
+                scale=alt.Scale(
+                    domain=list(FIT_COLOURS), range=list(FIT_COLOURS.values())
+                ),
+                legend=None,
+            ),
             tooltip=[
                 "role",
                 alt.Tooltip("match:Q", format=".0%", title="weighted fit"),
@@ -210,9 +234,7 @@ def tier_list(df, selected, role, suffix=""):
         st.write("–")
     for s, p in zip(df["skill"], df["value"]):
         mark = " ✓" if s in selected else ""
-        st.markdown(
-            f"**{s}**{mark} · {freq(p)} ads{suffix}", help=f"{p:.0%} of {role} ads"
-        )
+        st.markdown(f"**{s}**{mark} · {freq(p)} ads{suffix}")
 
 
 def detail_chart(skills, role, selected, n=15):
@@ -299,23 +321,24 @@ with tab_find:
         b = barriers.loc[role]
 
         left, right = st.columns([1, 1], gap="large")
-        with left:
+        with left, st.container(border=True):
             st.markdown("#### Your best fit")
             st.markdown(f"## {role}")
             st.markdown(
                 f"**{fit_label(best['match'])}:** you already have **{len(best['have'])} of the {best['n_key']} "
-                f"key skills** that {role} employers ask for.",
-                help="Key skills: required in at least 1 in 10 of the role's ads. "
-                "The ranking weights them by how often they are required.",
+                f"key skills** that {role} employers ask for."
             )
             nxt = best["missing"].head(3)
             if len(nxt):
                 st.markdown("**Learn next**")
-                for s, p in zip(nxt["skill"], nxt["share_required"]):
-                    st.markdown(
-                        f"- **{s}**: required in {freq(p)} {role} ads",
-                        help=f"{p:.0%} of {role} ads",
+                st.markdown(
+                    "\n".join(
+                        f"{i}. **{s}**: required in {freq(p)} {role} ads"
+                        for i, (s, p) in enumerate(
+                            zip(nxt["skill"], nxt["share_required"]), start=1
+                        )
                     )
+                )
             more = (
                 "more than"
                 if b["newcomer_friendly"] > AVG["newcomer_friendly"] + 0.03
@@ -325,13 +348,16 @@ with tab_find:
                     else "about as many as"
                 )
             )
-            st.success(
+            st.markdown(
                 f"**{freq(b['newcomer_friendly']).capitalize()} {role} ads are open to beginners**, "
                 f"{more} the average across data roles ({freq(AVG['newcomer_friendly'])})."
             )
-        with right:
+        with right, st.container(border=True):
             st.markdown("#### How well do you fit each role?")
             st.altair_chart(fit_chart(results), width="stretch")
+            st.caption(
+                "Darker = better fit. Ranked by how much of each role's key-skill demand you cover."
+            )
 
         st.markdown("#### Details per role")
         for r in results:
@@ -370,15 +396,22 @@ with tab_role:
         (rs["share_required"] < KEY_THRESHOLD) & (rs["share_nice"] >= 0.03)
     ].nlargest(5, "share_nice")
 
-    c1, c2, c3 = st.columns(3, gap="large")
-    with c1:
-        st.markdown("**Asked for most**  \n*must-have in at least 1 in 4 ads*")
+    def tier_header(title, note, colour):
+        st.markdown(
+            f'<div style="border-top:6px solid {colour};padding-top:8px"><b>{title}</b><br>'
+            f'<span style="color:#4a5568;font-size:0.9rem">{note}</span></div>',
+            unsafe_allow_html=True,
+        )
+
+    c1, c2, c3 = st.columns(3, gap="medium")
+    with c1, st.container(border=True):
+        tier_header("Asked for most", "must-have in at least 1 in 4 ads", OSLO["20"])
         tier_list(top.rename(columns={"share_required": "value"}), selected, role)
-    with c2:
-        st.markdown("**Also common**  \n*must-have in 1 in 4 to 1 in 10 ads*")
+    with c2, st.container(border=True):
+        tier_header("Also common", "must-have in 1 in 4 to 1 in 10 ads", OSLO["40"])
         tier_list(common.rename(columns={"share_required": "value"}), selected, role)
-    with c3:
-        st.markdown("**Bonus skills**  \n*often listed as “nice to have”*")
+    with c3, st.container(border=True):
+        tier_header("Bonus skills", "often listed as “nice to have”", OSLO["55"])
         tier_list(
             bonus.rename(columns={"share_nice": "value"}),
             selected,
@@ -389,7 +422,8 @@ with tab_role:
         st.caption("✓ = a skill you selected in tab 1.")
 
     st.markdown("#### How easy is it to get in?")
-    m = st.columns(4)
+    box = st.container(border=True)
+    m = box.columns(4)
     m[0].metric(
         "Open to beginners",
         freq(b["newcomer_friendly"]) + " ads",
@@ -418,7 +452,7 @@ with tab_role:
         help=f"{b['german_fluent']:.0%} of {role} ads: fließend, verhandlungssicher, muttersprachlich or C1/C2",
     )
     m[3].caption(f"{freq(b['english_ad']).capitalize()} ads are written in English")
-    st.caption(
+    box.caption(
         f"Based on {int(b['n_ads'])} {role} ads. Hover over ⓘ for the exact percentages."
     )
 
@@ -440,5 +474,7 @@ with st.expander("About the data and methods"):
   (53 of 58 correct); ad language from function words, cross-checked with a language detector (1,061 of 1,062 agree).
 - **Limitations:** a snapshot of one day from one platform; rule-based extraction can miss what a hedge word refers to;
   "mention a degree" includes "idealerweise ein Studium".
+- **Colours:** scientific colour map *oslo* by Fabio Crameri ([fabiocrameri.ch/colourmaps](https://www.fabiocrameri.ch/colourmaps/)),
+  perceptually uniform and readable with colour-vision deficiencies.
 - **Code and full analysis:** [{GITHUB}]({GITHUB})
 """)

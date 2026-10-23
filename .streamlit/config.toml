@@ -1,5 +1,8 @@
+# Colours from the scientific colour map "oslo" (Fabio Crameri, https://www.fabiocrameri.ch/colourmaps/)
 [theme]
 base = "light"
-primaryColor = "#5b7a99"
-textColor = "#2b2b2b"
+primaryColor = "#1a446d"
+backgroundColor = "#fbfbfa"
+secondaryBackgroundColor = "#ecedee"
+textColor = "#0f2236"
 font = "sans serif"
