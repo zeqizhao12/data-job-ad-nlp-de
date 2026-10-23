@@ -32,8 +32,10 @@ skills and entry requirements:
 - **Rule-based text classification** of job titles, evaluated against a hand-labelled sample by two annotators (precision, recall, Cohen's kappa).
 - **Skill and requirement extraction** from German and English ad texts with a regex dictionary, including German compounds like "Pythonkenntnisse".
 - **Hedge detection** to separate required from nice-to-have skills, using cue words ("von Vorteil", "a plus") and section headings.
+- **Language identification** of each ad (German or English) with a function-word count, cross-checked with a statistical language detector (lingua).
 - **Human validation** of every extraction step with stratified spot checks, instead of checking automated output with another model.
-- **Statistical comparison** of roles and seniority levels: shares with Wilson confidence intervals, log-odds ratios for role-typical skills, Fisher's exact test for the small junior group.
+- **Statistical comparison** of roles and seniority levels: shares with Wilson confidence intervals, log-odds ratios for role-typical skills, Fisher's exact test for the small junior group (Benjamini–Hochberg adjusted).
+- **Robustness checks:** results recomputed with duplicates weighted, old ads removed and every employer weighted equally.
 
 **Planned product.** A small web app that works in two directions:
 
@@ -61,7 +63,7 @@ Bundesagentur and the publishing employers. Running the collection notebook
 recreates the dataset. Since the job market changes daily, a new run will return
 a different set of ads.
 
-## Findings So Far (subject to change)
+## Findings
 
 ### Data-role filter
 
@@ -103,13 +105,68 @@ A mention counts as *nice-to-have* if the sentence or bullet contains a hedge cu
 required in more than 80% of their mentions**, while tools such as Airflow and
 Kafka are more often only a plus (27% of mentions).
 
-### Entry barriers (in progress)
+### Each role has a clear skill profile
 
-Experience (years or "mehrjährig"), degree, PhD, alternative paths ("or equivalent
-qualification") and German level are extracted. German level is categorised by the
-wording of the ad ("fließend", "sehr gut", "gut", CEFR level if stated), because
-descriptions like "gute Deutschkenntnisse" cannot be mapped to CEFR levels. A second
-manual check is in progress.
+The most typical skills of each role (log-odds ratio, role vs. all other ads):
+
+| Role | Most typical skills |
+|---|---|
+| Data Analyst | Excel, Tableau, Power BI, R, statistics |
+| BI / Analytics | Qlik, DAX / Power Query, SAP, Power BI, data modelling |
+| Data Scientist | statistics, scikit-learn, machine learning, pandas, Python |
+| Data Engineer | Kafka, Airflow, dbt, Spark, ETL / ELT |
+| ML / AI Engineer | TensorFlow, LLM / GenAI, PyTorch, deep learning, machine learning |
+
+These profiles match common role descriptions, which also supports the title-based
+role assignment.
+
+![Skills by role](reports/figures/role_heatmap.png)
+
+### Entry barriers: experience, not the degree, separates junior from senior ads
+
+Experience, degree and German level are extracted from the ad text (53 of 58
+manually checked items correct). Most ads give no number of years (613 of 1,062),
+and 282 ask for "several years". 821 ads mention a university degree, but 338 also
+name an alternative path ("oder vergleichbare Qualifikation").
+
+- **Junior titles lower the experience bar:** only 3.6% of junior ads ask for three
+  or more (or "several") years, compared with 62.8% of senior ads, and 49.1% contain
+  an entry signal ("Berufseinsteiger", "erste Erfahrung"; senior: 4.0%). Both
+  differences are significant (Fisher's exact test, adjusted p < 0.001).
+- **They do not lower the degree bar:** a degree is mentioned in 81.8% of junior and
+  68.0% of senior ads (not significant after adjustment, with only 55 junior ads).
+- **Data Analyst is the most accessible role:** 30.8% of its ads are
+  newcomer-friendly (junior title, entry signal or at most 1–2 years), compared with
+  21.3% overall. It is the only role whose 95% confidence interval lies above the
+  average.
+
+![Newcomer-friendly ads by role](reports/figures/newcomer_by_role.png)
+
+### German: the language of the ad matters
+
+46% of the ads do not mention German at all, but most of these are written in German
+and expect it implicitly. The language of each ad was identified with two methods,
+which agree on 1,061 of 1,062 ads.
+
+- **136 ads (12.8%) are written in English**, and 78.7% of them do not mention German.
+  That leaves about one ad in ten (107 of 1,062) that is in English and states no
+  German requirement.
+- **English-language ads are most common for ML / AI (18.5%) and Data Analyst
+  (15.8%)**, and rare for BI / Analytics (3.4%).
+- **German level is grouped by the common German CV scale**, in which "gute" and
+  "sehr gute Kenntnisse" form one level and "fließend" is the next step. A native
+  speaker reviewed the scale and the hedge words. Fluent German or higher is
+  required in 22.2% of all ads.
+
+![German requirement by language](reports/figures/german_by_language.png)
+
+### The results are robust
+
+Weighting ads by their duplicates, leaving out the 38 ads older than a year, or
+weighting each of the 639 employers equally changes the newcomer-friendly share by
+at most 0.2 percentage points (21.1–21.4% vs. 21.3%). Skill shares keep almost the
+same ranking (Spearman 0.985–0.999); the largest change is 4.1 percentage points
+(Python, with employers weighted equally).
 
 ### From data collection
 
@@ -135,7 +192,13 @@ coded as data occupations are hardware or mechanical engineering jobs.
 - **Rules, not a model:** the dictionary only finds what it lists. Every step is
   spot-checked by hand to measure how much this matters.
 - **Scope of hedge cues:** "von Vorteil" can refer to a different skill in the same
-  sentence, so a required skill may be counted as nice-to-have.
+  sentence, so a required skill may be counted as nice-to-have. The same applies to
+  German level words ("Fluent English required, German skills are a plus").
+- **Degree mentioned, not required:** "idealerweise ein Studium" counts as a degree.
+- **German level scale:** the grouping follows a common CV convention, not an
+  official standard.
+- **Small junior group:** only 55 ads have a junior title, so differences need
+  large effects to be significant.
 
 ## Future Work
 
@@ -155,7 +218,10 @@ data-job-ad-nlp-de/
 │   ├── 00_api_test.ipynb     # testing the data source
 │   ├── 01_collect.ipynb      # collecting search results and full texts
 │   ├── 02_cleaning.ipynb     # cleaning, data-role filter and its evaluation
-│   └── 03_extraction.ipynb   # roles, seniority, skills, required vs. nice-to-have, entry barriers
+│   ├── 03_extraction.ipynb   # roles, seniority, skills, required vs. nice-to-have, entry barriers, ad language
+│   └── 04_analysis.ipynb     # confidence intervals, role comparison, junior vs. senior, robustness checks
+├── app/
+│   └── data/                 # aggregated tables for the web app (no ad texts)
 ├── reports/
 │   └── figures/              # charts used in the README and report
 ├── src/                      # reusable code
@@ -184,7 +250,8 @@ Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 - **Visualisation:** matplotlib
 - **Environment:** uv, Jupyter, VS Code
 - **Version control:** Git, GitHub
-- **Statistics:** SciPy, statsmodels (planned)
+- **Statistics:** SciPy
+- **Language identification:** lingua
 - **Interactive web app:** Streamlit (planned)
 
 ## Progress
@@ -197,8 +264,8 @@ Then run the notebooks in order. `01_collect.ipynb` downloads the data into
 - [x] Data-role filter, evaluated against 100 hand-labelled ads and a second annotator
 - [x] Role and seniority assignment
 - [x] Skill extraction (46 skills) and required vs. nice-to-have split
-- [ ] Entry barriers: experience, degree, German level (in progress)
-- [ ] Analysis: shares with confidence intervals, role comparison, junior vs. senior
+- [x] Entry barriers: experience, degree, German level, ad language
+- [x] Analysis: shares with confidence intervals, role comparison, junior vs. senior, robustness checks
 - [ ] Interactive web app: skills → roles, role → skills (planned)
 - [ ] Final report
 
