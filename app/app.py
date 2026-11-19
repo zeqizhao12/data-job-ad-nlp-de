@@ -1,6 +1,6 @@
 """Which data job fits you?
 
-Streamlit app on 1,062 data-role job ads from the Bundesagentur für Arbeit (collected 7 October 2026).
+Streamlit app on 1,768 data-role job ads from the Bundesagentur für Arbeit (collected 7 October and 19 November 2026).
 It reads only aggregated tables from `app/data/` (created by notebooks/04_analysis.ipynb), no ad texts.
 
 Design:
@@ -234,7 +234,7 @@ def result_text(results):
     """Plain-text summary the user can save."""
     lines = [
         "Which data job fits you? - my result",
-        f"Based on {N_TOTAL:,} job ads (Bundesagentur für Arbeit, October 2026)",
+        f"Based on {N_TOTAL:,} job ads (Bundesagentur für Arbeit, October and November 2026)",
         "",
         "My skills: " + ", ".join(selected_skills()),
         "",
@@ -262,7 +262,7 @@ def start_page():
     )
     st.markdown(
         f"Based on **{N_TOTAL:,} real job ads** for data roles in Germany "
-        "(Bundesagentur für Arbeit, October 2026)."
+        "(Bundesagentur für Arbeit, October and November 2026)."
     )
 
     st.write("")
@@ -628,13 +628,14 @@ st.navigation([start_page, find_page, explore_page], position="top").run()
 st.divider()
 with st.expander("About the data and methods"):
     st.markdown(f"""
-- **Data:** job ads from the job search of the Bundesagentur für Arbeit (7 October 2026). After cleaning and a
+- **Data:** job ads from the job search of the Bundesagentur für Arbeit (7 October and 19 November 2026). After cleaning and a
   title-based data-role filter (precision 0.88, recall 0.85 against 100 hand-labelled ads), {N_TOTAL:,} ads remain.
   {N_TOTAL - int(barriers["n_ads"].sum())} ads with no clear role ("Other data role") count in the averages but are not shown as a role.
 - **Extraction:** role and seniority from the job title; 46 skills with a regex dictionary (108 of 110 checked hits
   correct); must-have vs. nice-to-have from hedging words (28 of 30 correct); experience, degree and German level
-  (53 of 58 correct); ad language from function words, cross-checked with a language detector (1,061 of 1,062 agree).
-- **Limitations:** a snapshot of one day from one platform; rule-based extraction can miss what a hedge word refers to;
+  (53 of 58 correct); ad language from function words, cross-checked with a language detector (1,767 of 1,768 agree).
+- **Limitations:** two snapshots six weeks apart from one platform; manual checks on the first snapshot only;
+  rule-based extraction can miss what a hedge word refers to;
   "mention a degree" includes "idealerweise ein Studium".
 - **Colours:** scientific colour map *oslo* by Fabio Crameri ([fabiocrameri.ch/colourmaps](https://www.fabiocrameri.ch/colourmaps/)),
   perceptually uniform and readable with colour-vision deficiencies; light and dark mode via ⋮ → Settings.

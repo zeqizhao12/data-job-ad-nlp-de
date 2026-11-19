@@ -30,15 +30,15 @@ from the perspective of a newcomer:
 
 **Approach.** The project turns unstructured job ad texts into structured information about data roles, 
 skills and entry requirements:
-- **Data collection** via API, with retries and resumable downloads.
-- **Near-duplicate detection** with text similarity to identify and remove repeated ads.
+- **Data collection** via API, with retries and resumable downloads, in two snapshots six weeks apart.
+- **Near-duplicate detection** with text similarity to identify and remove repeated ads, also across the two snapshots.
 - **Rule-based text classification** of job titles, evaluated against a hand-labelled sample by two annotators (precision, recall, Cohen's kappa).
 - **Skill and requirement extraction** from German and English ad texts with a regex dictionary, including German compounds like "Pythonkenntnisse".
 - **Hedge detection** to separate required from nice-to-have skills, using cue words ("von Vorteil", "a plus") and section headings.
 - **Language identification** of each ad (German or English) with a function-word count, cross-checked with a statistical language detector (lingua).
 - **Human validation** of every extraction step with stratified spot checks, instead of checking automated output with another model.
 - **Statistical comparison** of roles and seniority levels: shares with Wilson confidence intervals, log-odds ratios for role-typical skills, Fisher's exact test for the small junior group (Benjamini–Hochberg adjusted).
-- **Robustness checks:** results recomputed with duplicates weighted, old ads removed and every employer weighted equally.
+- **Robustness checks:** results recomputed with duplicates weighted, old ads removed, every employer weighted equally, and with each snapshot's contribution separated.
 
 **Product.** A [web app](https://data-jobs-de.streamlit.app/) for career switchers and newcomers that works in two directions:
 
@@ -50,11 +50,11 @@ skills and entry requirements:
 | | |
 |---|---|
 | **Source** | Job search of the Bundesagentur für Arbeit |
-| **Collected** | 7 October 2026 |
-| **Search terms** | Data Analyst, Datenanalyst, Data Scientist, Data Engineer, Dateningenieur, Business Intelligence, Machine Learning |
-| **Size** | 2,119 ads with full text (2,542 search results, 2,121 after duplicate removal; 2 ads expired before their text could be fetched) |
-| **After cleaning** | 1,957 ads (2,031 with a location in Germany; 32 exact and 42 near-duplicate copies removed) |
-| **Data roles** | 1,068 ads pass the title rule; 1,062 after removing ads that matched only through an employer name ("NTT DATA") |
+| **Collected** | Two snapshots: 7 October and 19 November 2026 |
+| **Search terms** | Data Analyst, Datenanalyst, Data Scientist, Data Engineer, Dateningenieur, Business Intelligence, Machine Learning; in the second snapshot also AI Engineer, MLOps |
+| **Size** | 3,570 ads with full text: 2,119 from 7 October (2,121 unique search results; 2 ads expired before their text could be fetched) and 1,451 new ads from 19 November (2,306 unique search results, 855 of them already collected in October) |
+| **After cleaning** | 3,170 ads (3,460 with a location in Germany; 203 exact and 87 near-duplicate copies removed, most of them ads published again between the two snapshots) |
+| **Data roles** | 1,777 ads pass the title rule; 1,768 after removing ads that matched only through an employer name ("NTT DATA"): 1,062 from the first snapshot, 706 from the second |
 | **Content** | Title, employer, location, contract type, home office option, publication date, full ad text |
 
 The Bundesagentur does not offer an official public API. Access follows the
@@ -66,6 +66,13 @@ Bundesagentur and the publishing employers. Running the collection notebook
 recreates the dataset. Since the job market changes daily, a new run will return
 a different set of ads.
 
+**Why two snapshots?** One day of the job search holds only about 2,100 ads for
+these terms; the collection already gets every result. Ads turn over quickly, so
+a second collection six weeks later added 1,451 new ads and raised the number of
+data-role ads from 1,062 to 1,768. The two new search terms brought in 156 of
+these, almost all ML / AI roles, which changes the role mix (see the robustness
+checks below).
+
 ## Findings
 
 ### Data-role filter
@@ -73,13 +80,13 @@ a different set of ads.
 A search for data jobs does not return only data jobs, so ads are filtered with a
 rule on the **job title** (not the ad text, which would make the later skill counts
 confirm the selection). The rule was evaluated against a random sample of 100
-hand-labelled ads:
+hand-labelled ads from the first snapshot:
 
 | | Version 1 | Version 3 (final) |
 |---|---|---|
 | Precision | 0.79 | **0.88** |
 | Recall | 0.85 | **0.85** (44 of 52 data roles) |
-| Ads kept | 1,104 | **1,068** |
+| Ads kept (both snapshots) | 1,842 | **1,777** |
 
 A second annotator (a senior data analyst) labelled 30 of the ads independently with
 the same codebook. Agreement was only fair (Cohen's kappa 0.37 for three categories,
@@ -88,15 +95,17 @@ governance, teaching) is unclear even for humans. This is reported as a limitati
 
 ### Roles, seniority and skills
 
-- **Roles (from the title):** Data Engineer 281, Data Analyst 247, ML / AI 211,
-  BI 119, Data Scientist 119, other 85.
-- **Seniority is rarely stated.** Only 55 titles say junior, 250 say senior, and
-  757 give no level, so for newcomers the requirements in the ad text matter more
+- **Roles (from the title):** ML / AI 507, Data Engineer 395, Data Analyst 383,
+  BI 175, Data Scientist 172, other 136. ML / AI became the largest role mainly
+  through the new search term "AI Engineer".
+- **Seniority is rarely stated.** Only 76 titles say junior, 434 say senior, and
+  1,258 give no level, so for newcomers the requirements in the ad text matter more
   than the title.
 - **Skills** are extracted with a dictionary of 46 skills (German and English
   variants). A stratified spot check found 108 of 110 hits correct.
-- **Python (46%) and SQL (44%)** are the most frequent skills, followed by machine
-  learning and data modelling (30% each).
+- **Python (46%) and SQL (41%)** are the most frequent skills, followed by machine
+  learning and data modelling (28% each) and LLM / GenAI (22%; 14% in the first
+  snapshot, 33% in the second).
 
 ![Top skills](reports/figures/top_skills.png)
 
@@ -106,7 +115,7 @@ A mention counts as *nice-to-have* if the sentence or bullet contains a hedge cu
 ("von Vorteil", "idealerweise", "a plus") or sits under a heading such as
 "Nice-to-have". A spot check of 30 mentions found 28 correct. **Python and SQL are
 required in more than 80% of their mentions**, while tools such as Airflow and
-Kafka are more often only a plus (27% of mentions).
+Kafka are more often only a plus (25% of mentions).
 
 ### Each role has a clear skill profile
 
@@ -114,34 +123,36 @@ The most typical skills of each role (log-odds ratio, role vs. all other ads):
 
 | Role | Most typical skills |
 |---|---|
-| Data Analyst | Excel, Tableau, Power BI, R, statistics |
-| BI / Analytics | Qlik, DAX / Power Query, SAP, Power BI, data modelling |
-| Data Scientist | statistics, scikit-learn, machine learning, pandas, Python |
-| Data Engineer | Kafka, Airflow, dbt, Spark, ETL / ELT |
-| ML / AI Engineer | TensorFlow, LLM / GenAI, PyTorch, deep learning, machine learning |
+| Data Analyst | Excel, VBA, Tableau, Power BI, R |
+| BI / Analytics | Qlik, DAX / Power Query, SAP, data modelling, data warehouse |
+| Data Scientist | statistics, scikit-learn, machine learning, R, Python |
+| Data Engineer | dbt, Kafka, Airflow, ETL / ELT, Spark |
+| ML / AI Engineer | LLM / GenAI, deep learning, TensorFlow, PyTorch, computer vision |
 
 These profiles match common role descriptions, which also supports the title-based
 role assignment.
 
 ![Skills by role](reports/figures/role_heatmap.png)
 
-### Entry barriers: experience, not the degree, separates junior from senior ads
+### Entry barriers: junior ads lower the experience bar, not the degree bar
 
 Experience, degree and German level are extracted from the ad text (53 of 58
-manually checked items correct). Most ads give no number of years (613 of 1,062),
-and 282 ask for "several years". 821 ads mention a university degree, but 338 also
+manually checked items correct). Most ads give no number of years (997 of 1,768),
+and 496 ask for "several years". 1,371 ads mention a university degree, but 571 also
 name an alternative path ("oder vergleichbare Qualifikation").
 
-- **Junior titles lower the experience bar:** only 3.6% of junior ads ask for three
-  or more (or "several") years, compared with 62.8% of senior ads, and 49.1% contain
-  an entry signal ("Berufseinsteiger", "erste Erfahrung"; senior: 4.0%). Both
+- **Junior titles lower the experience bar:** only 2.6% of junior ads ask for three
+  or more (or "several") years, compared with 64.5% of senior ads, and 51.3% contain
+  an entry signal ("Berufseinsteiger", "erste Erfahrung"; senior: 5.1%). Both
   differences are significant (Fisher's exact test, adjusted p < 0.001).
-- **They do not lower the degree bar:** a degree is mentioned in 81.8% of junior and
-  68.0% of senior ads (not significant after adjustment, with only 55 junior ads).
-- **Data Analyst is the most accessible role:** 30.8% of its ads are
+- **They do not lower the degree bar:** junior ads mention a degree even more often
+  than senior ads (82.9% vs. 68.7%, adjusted p = 0.03). With the first snapshot
+  alone (55 junior ads), this difference was not significant.
+- **Data Analyst is the most accessible role:** 27.9% of its ads are
   newcomer-friendly (junior title, entry signal or at most 1–2 years), compared with
-  21.3% overall. It is the only role whose 95% confidence interval lies above the
-  average.
+  19.2% overall. It is the only role whose 95% confidence interval lies above the
+  average. The share is lower in the second snapshot (16.0%) than in the first
+  (21.3%); two snapshots cannot tell whether this is a trend.
 
 ![Newcomer-friendly ads by role](reports/figures/newcomer_by_role.png)
 
@@ -149,27 +160,33 @@ name an alternative path ("oder vergleichbare Qualifikation").
 
 46% of the ads do not mention German at all, but most of these are written in German
 and expect it implicitly. The language of each ad was identified with two methods,
-which agree on 1,061 of 1,062 ads.
+which agree on 1,767 of 1,768 ads.
 
-- **136 ads (12.8%) are written in English**, and 78.7% of them do not mention German.
-  That leaves about one ad in ten (107 of 1,062) that is in English and states no
+- **230 ads (13.0%) are written in English**, and 79.1% of them do not mention German.
+  That leaves about one ad in ten (182 of 1,768) that is in English and states no
   German requirement.
-- **English-language ads are most common for ML / AI (18.5%) and Data Analyst
-  (15.8%)**, and rare for BI / Analytics (3.4%).
+- **Among the named roles, English-language ads are most common for Data Analyst
+  (17.5%) and ML / AI (14.2%)**, and rare for BI / Analytics (2.3%).
 - **German level is grouped by the common German CV scale**, in which "gute" and
   "sehr gute Kenntnisse" form one level and "fließend" is the next step. A native
   speaker reviewed the scale and the hedge words. Fluent German or higher is
-  required in 22.2% of all ads.
+  required in 23.6% of all ads.
 
 ![German requirement by language](reports/figures/german_by_language.png)
 
 ### The results are robust
 
-Weighting ads by their duplicates, leaving out the 38 ads older than a year, or
-weighting each of the 639 employers equally changes the newcomer-friendly share by
-at most 0.2 percentage points (21.1–21.4% vs. 21.3%). Skill shares keep almost the
-same ranking (Spearman 0.985–0.999); the largest change is 4.1 percentage points
-(Python, with employers weighted equally).
+Weighting ads by their duplicates, leaving out the 45 ads older than a year, or
+weighting each of the 977 employers equally changes the newcomer-friendly share by
+at most 0.4 percentage points (19.0–19.6% vs. 19.2%). Skill shares keep almost the
+same ranking (Spearman 0.984–0.999); the largest change is 3.3 percentage points
+(Power BI, with employers weighted equally).
+
+The second snapshot matters more than any cleaning decision. With the first
+snapshot only, LLM / GenAI is 7.4 percentage points lower and 21.3% of ads are
+newcomer-friendly; without the 156 ads that only the new search terms found,
+LLM / GenAI is 3.4 points lower and the newcomer-friendly share is 19.5%. Overall
+shares depend on the mix of roles; comparisons between roles do not.
 
 ### From data collection
 
@@ -181,8 +198,12 @@ same ranking (Spearman 0.985–0.999); the largest change is 4.1 percentage poin
   extraction must cover the full text.
 - **Some duplicates are invisible to the reference number.** Recruitment
   agencies sometimes post the same job twice under different IDs; these must be
-  removed by comparing texts.
-- A data search does not return only data jobs. Only 57% of the cleaned ads have a data 
+  removed by comparing texts. Between the two snapshots this is common: 120 texts
+  from 7 October appeared again under a new reference number on 19 November.
+- **Ads turn over quickly.** Only 855 of the 2,121 ads from 7 October were found
+  again six weeks later, so a second collection adds far more data than new
+  search terms would.
+- A data search does not return only data jobs. Only 59% of the cleaned ads have a data 
 term in the title. The official occupation code is not a reliable filter either: some ads 
 coded as data occupations are hardware or mechanical engineering jobs.
 
@@ -203,7 +224,7 @@ coded as data occupations are hardware or mechanical engineering jobs.
 2. Each key skill is **weighted** by how often it is required.
 3. **Fit score** = weights of the key skills you have ÷ weights of all key skills. Labels: at least 60% *Strong fit*, 40–60% *Good start*, 20–40% *Some overlap*, below 20% *Little overlap*.
 
-*Example:* with Python, SQL, Excel and Statistics, Data Analyst has 8 key skills; the four selected ones are required in 32.0%, 25.1%, 23.5% and 21.1% of Data Analyst ads (sum 101.7), all eight sum to 181.3, so the fit is 101.7 ÷ 181.3 = 56% (*Good start*). The most required missing skill is Power BI (28.3%), shown as "3 in 10 ads".
+*Example:* with Python, SQL, Excel and Statistics, Data Analyst has 8 key skills; the four selected ones are required in 31.9%, 26.1%, 23.0% and 19.3% of Data Analyst ads (sum 100.3), all eight sum to 180.6, so the fit is 100.3 ÷ 180.6 = 56% (*Good start*). The most required missing skill is Power BI (27.2%), shown as "3 in 10 ads".
 
 **Design decisions.**
 
@@ -213,9 +234,15 @@ coded as data occupations are hardware or mechanical engineering jobs.
 
 ## Limitations
 
-- **Data source:** a snapshot of one day from one platform (Bundesagentur für Arbeit);
-  ads on LinkedIn, StepStone and company sites are not included. Results describe
-  this sample, not the whole market.
+- **Data source:** two snapshots, six weeks apart, from one platform (Bundesagentur
+  für Arbeit); ads on LinkedIn, StepStone and company sites are not included.
+  Results describe this sample, not the whole market.
+- **Pooled snapshots with different search terms:** the second snapshot added
+  "AI Engineer" and "MLOps", which raises the share of ML / AI ads. Overall shares
+  depend on this mix; the robustness checks show by how much.
+- **Manual checks on the first snapshot only:** all hand-labelled samples were drawn
+  before the second snapshot was added; the same rules were applied to the new ads
+  without a separate spot check.
 - **Fuzzy boundary of "data role":** two annotators agreed only fairly (kappa 0.37).
 - **Rules, not a model:** the dictionary only finds what it lists. Every step is
   spot-checked by hand to measure how much this matters.
@@ -225,7 +252,7 @@ coded as data occupations are hardware or mechanical engineering jobs.
 - **Degree mentioned, not required:** "idealerweise ein Studium" counts as a degree.
 - **German level scale:** the grouping follows a common CV convention, not an
   official standard.
-- **Small junior group:** only 55 ads have a junior title, so differences need
+- **Small junior group:** only 76 ads have a junior title, so differences need
   large effects to be significant.
 - **Rounding in the app:** "3 in 10 ads" rounds to whole tenths, so small differences
   disappear (25% and 34% both show as 3 in 10); exact values are in the app's tables.
@@ -236,14 +263,15 @@ coded as data occupations are hardware or mechanical engineering jobs.
 - A text classifier (e.g. TF-IDF + logistic regression) as a comparison to the rule-based baseline
 - A second labelling round with a sharper codebook for adjacent roles
 - Skill co-occurrence networks
-- Regular collection to track changes over time
+- A spot check of the second snapshot, especially the ML / AI ads from the new search terms
+- Regular collection to track changes over time (the newcomer-friendly share was 21% in the first snapshot and 16% in the second)
 
 ## Project Structure
 
 ```
 data-job-ad-nlp-de/
 ├── data/
-│   ├── raw/                  # collected ads (not in the repository)
+│   ├── raw/                  # collected ads, second snapshot in raw/2026-11-19/ (not in the repository)
 │   └── processed/            # cleaned data (not in the repository)
 ├── notebooks/
 │   ├── 00_api_test.ipynb     # testing the data source
@@ -275,7 +303,8 @@ uv sync
 ```
 
 Then run the notebooks in order. `01_collect.ipynb` downloads the data into
-`data/raw/`; the full collection takes about 35 minutes.
+`data/raw/` (first snapshot) and `data/raw/2026-11-19/` (second snapshot); each
+snapshot takes about one second or more per ad, so plan for one to two hours.
 
 The web app runs without the raw data, from the aggregated tables in `app/data/`:
 
@@ -309,6 +338,7 @@ uv run streamlit run app/app.py
 - [x] Analysis: shares with confidence intervals, role comparison, junior vs. senior, robustness checks
 - [x] Web app: skills → roles, role → skills ([live](https://data-jobs-de.streamlit.app/))
 - [x] Final presentation (23 October 2026)
+- [x] Second snapshot (19 November 2026): 1,768 data-role ads instead of 1,062
 
 ## Author
 
